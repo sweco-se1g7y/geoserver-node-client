@@ -1,13 +1,13 @@
-import { GeoServerRestClient } from '../geoserver-rest-client.js';
+import { GeoServerRestClient } from "../geoserver-rest-client.js";
 
-const url = 'http://localhost:8080/geoserver/rest/';
-const user = 'admin';
-const pw = 'geoserver';
+const url = "http://localhost:8080/geoserver/rest/";
+const user = "admin";
+const pw = "geoserver";
 const grc = new GeoServerRestClient(url, user, pw);
 
 // const ws = 'test';
 
-function prettyJson (obj) {
+function prettyJson(obj) {
   return JSON.stringify(obj, null, 2);
 }
 
@@ -16,17 +16,14 @@ main();
 /**
  * Async function containing all demo request
  */
-async function main () {
+async function main() {
   try {
     // GENERAL
 
-    console.log(
-      'GeoServer REST exists',
-      await grc.about.exists()
-    );
+    console.log("GeoServer REST exists", await grc.about.exists());
 
     console.log(
-      'GeoServer REST version info',
+      "GeoServer REST version info",
       prettyJson(await grc.about.getVersion())
     );
 
@@ -241,6 +238,17 @@ async function main () {
     //   prettyJson(await grc.layers.getWmtsLayer('mgsm-world', 'meg_wmts', 'postal_codes_germany' ))
     // );
 
+    // console.log(
+    //   "Get FeatureType",
+    //   prettyJson(await grc.layers.getFeatureType('ne', 'coastlines'))
+    // );
+
+    // console.log(
+    //   "Get Data Store",
+    //   prettyJson(await grc.layers.getDataStore('ne', 'coastlines'))
+    // );
+
+
     // STYLES
 
     // console.log(
@@ -297,10 +305,10 @@ async function main () {
     // await grc.resetReload.reset();
     // await grc.resetReload.reload();
   } catch (error) {
-    console.error('#### Error message #####');
+    console.error("#### Error message #####");
     console.error(error.message);
 
-    console.error('#### Whole Error Object #####');
+    console.error("#### Whole Error Object #####");
     console.error(error);
   }
 }
