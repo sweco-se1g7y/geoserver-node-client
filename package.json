@@ -21,7 +21,7 @@
   },
   "exports": {
     "import": "./geoserver-rest-client.js",
-    "require": "./dist/geoserver-rest-client.js"
+    "require": "./geoserver-rest-client.js"
   },
   "files": [
     "geoserver-rest-client.js",
