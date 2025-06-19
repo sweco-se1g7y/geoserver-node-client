@@ -819,6 +819,41 @@ export default class LayerClient {
   }
 
   /**
+   * Returns a dedicated coverage object.
+   *
+   * @param {String} workspace Workspace containing the coverage
+   * @param {String} name Coverage to query
+   *
+   * @throws Error if request fails
+   *
+   * @returns {Object} An object with coverage information or undefined if it cannot be found
+   */
+  async getCoverage(workspace, name) {
+    const url =
+      this.url + "/workspaces/" + workspace + "/coverages/" + name + ".json";
+    const response = await fetch(url, {
+      credentials: "include",
+      method: "GET",
+      headers: {
+        Authorization: this.auth,
+      },
+    });
+
+    if (!response.ok) {
+      const grc = new AboutClient(this.url, this.auth);
+      if (await grc.exists()) {
+        // GeoServer exists, but requested item does not exist, we return empty
+        return;
+      } else {
+        // There was a general problem with GeoServer
+        const geoServerResponse = await getGeoServerResponseText(response);
+        throw new GeoServerResponseError(null, geoServerResponse);
+      }
+    }
+    return response.json();
+  }
+
+  /**
    * Renames the existing bands of a coverage layer.
    *
    * Make sure to provide the same number of bands as existing in the layer.
@@ -896,6 +931,54 @@ export default class LayerClient {
     }
 
     const url = featureTypeObj?.featureType?.store?.href;
+
+    const response = await fetch(url, {
+      credentials: "include",
+      method: "GET",
+      headers: {
+        Authorization: this.auth,
+      },
+    });
+
+    if (!response.ok) {
+      const grc = new AboutClient(this.url, this.auth);
+      if (await grc.exists()) {
+        // GeoServer exists, but requested item does not exist, we return empty
+        return;
+      } else {
+        // There was a general problem with GeoServer
+        const geoServerResponse = await getGeoServerResponseText(response);
+        throw new GeoServerResponseError(null, geoServerResponse);
+      }
+    }
+    return response.json();
+  }
+
+  /**
+   * Returns the coverage store of a layer.
+   *
+   * @param {String} workspace The workspace of the layer
+   * @param {String} layer The name of the layer
+   *
+   * @throws GeoServerResponseError if request fails or layer does not exist or lacks a coverage store.
+   *
+   * @returns {Object} The coverage store object
+   */
+  async getCoverageStore(workspace, layer) {
+    const coverageObj = await this.getCoverage(workspace, layer);
+
+    if (
+      !coverageObj ||
+      !coverageObj.coverage ||
+      !coverageObj.coverage.store ||
+      !coverageObj.coverage.store.name
+    ) {
+      throw new GeoServerResponseError(
+        `Layer '${workspace}:${layer}' lacks a coverage or the coverage lacks a coverage store.`
+      );
+    }
+
+    const url = coverageObj?.coverage?.store?.href;
 
     const response = await fetch(url, {
       credentials: "include",

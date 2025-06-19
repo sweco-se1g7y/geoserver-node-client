@@ -248,6 +248,10 @@ async function main() {
     //   prettyJson(await grc.layers.getDataStore('ne', 'coastlines'))
     // );
 
+    // console.log(
+    //   "Get Coverage Store",
+    //   prettyJson(await grc.layers.getDataStore('nurc', 'Arc_Sample'))
+    // );
 
     // STYLES
 
