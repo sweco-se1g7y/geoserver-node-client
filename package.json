@@ -4,6 +4,7 @@
   "description": "Node.js client for GeoServer REST API",
   "type": "module",
   "main": "geoserver-rest-client.js",
+  "types":"types/geoserver-rest-client.d.ts",
   "scripts": {
     "demo": "node demo/index.js",
     "docs": "./node_modules/.bin/jsdoc geoserver-rest-client.js src/*.js DOCS_HOME.md && cp img/*.png out/",
