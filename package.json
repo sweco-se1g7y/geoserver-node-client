@@ -27,7 +27,8 @@
   "files": [
     "geoserver-rest-client.js",
     "src",
-    "dist"
+    "dist",
+    "types"
   ],
   "keywords": [
     "GeoServer",
