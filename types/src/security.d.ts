@@ -42,6 +42,14 @@ export default class SecurityClient {
      */
     updateUser(username: string, password: string, enabled: boolean): Promise<void>;
     /**
+     * Deletes an existing user.
+     *
+     * @param {String} username The name of the user to be deleted
+     *
+     * @throws Error if request fails
+     */
+    deleteUser(username: string): Promise<void>;
+    /**
      * Associates the given role to the user.
      *
      * @param {String} username The name of the user to add the role to

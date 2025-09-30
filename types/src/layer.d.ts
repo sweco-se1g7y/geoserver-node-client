@@ -262,5 +262,27 @@ export default class LayerClient {
      * @returns {Object} The coverage store object
      */
     getCoverageStore(workspace: string, layer: string): any;
+    /**
+     * Returns the WMS store of a WMS layer.
+     *
+     * @param {String} workspace The workspace of the WMS layer
+     * @param {String} layer The name of the WMS layer
+     *
+     * @throws GeoServerResponseError if request fails or WMS layer does not exist or lacks a WMS store.
+     *
+     * @returns {Object} The coverage store object
+     */
+    getWMSStore(workspace: string, layer: string): any;
+    /**
+     * Returns the WMS store of a WMTS layer.
+     *
+     * @param {String} workspace The workspace of the WMTS layer
+     * @param {String} layer The name of the WMTS layer
+     *
+     * @throws GeoServerResponseError if request fails or WMTS layer does not exist or lacks a WMTS store.
+     *
+     * @returns {Object} The coverage store object
+     */
+    getWMTSStore(workspace: string, layer: string): any;
 }
 //# sourceMappingURL=layer.d.ts.map
