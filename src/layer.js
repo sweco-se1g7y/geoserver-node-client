@@ -945,4 +945,90 @@ export default class LayerClient {
     }
     return response.json();
   }
+
+  /**
+   * Returns the WMS store of a WMS layer.
+   *
+   * @param {String} workspace The workspace of the WMS layer
+   * @param {String} layer The name of the WMS layer
+   *
+   * @throws GeoServerResponseError if request fails or WMS layer does not exist or lacks a WMS store.
+   *
+   * @returns {Object} The coverage store object
+   */
+  async getWMSStore(workspace, layer) {
+    const wmsObj = await this.getFeatureTypeFromLayer(workspace, layer);
+
+    if (!wmsObj || !wmsObj.wmsLayer || !wmsObj.wmsLayer.store || !wmsObj.wmsLayer.store.href) {
+      throw new GeoServerResponseError(
+        `Layer '${workspace}:${layer}' lacks a WMS resource or the WMS resource lacks a store.`
+      );
+    }
+
+    const url = wmsObj?.wmsLayer?.store?.href;
+
+    const response = await fetch(url, {
+      credentials: 'include',
+      method: 'GET',
+      headers: {
+        Authorization: this.auth
+      }
+    });
+
+    if (!response.ok) {
+      const grc = new AboutClient(this.url, this.auth);
+      if (await grc.exists()) {
+        // GeoServer exists, but requested item does not exist, we return empty
+        return;
+      } else {
+        // There was a general problem with GeoServer
+        const geoServerResponse = await getGeoServerResponseText(response);
+        throw new GeoServerResponseError(null, geoServerResponse);
+      }
+    }
+    return response.json();
+  }
+
+  /**
+   * Returns the WMS store of a WMTS layer.
+   *
+   * @param {String} workspace The workspace of the WMTS layer
+   * @param {String} layer The name of the WMTS layer
+   *
+   * @throws GeoServerResponseError if request fails or WMTS layer does not exist or lacks a WMTS store.
+   *
+   * @returns {Object} The coverage store object
+   */
+  async getWMTSStore(workspace, layer) {
+    const wmtsObj = await this.getFeatureTypeFromLayer(workspace, layer);
+
+    if (!wmtsObj || !wmtsObj.wmtsLayer || !wmtsObj.wmtsLayer.store || !wmtsObj.wmtsLayer.store.href) {
+      throw new GeoServerResponseError(
+        `Layer '${workspace}:${layer}' lacks a WMTS resource or the WMTS resource lacks a store.`
+      );
+    }
+
+    const url = wmtsObj?.wmtsLayer?.store?.href;
+
+    const response = await fetch(url, {
+      credentials: 'include',
+      method: 'GET',
+      headers: {
+        Authorization: this.auth
+      }
+    });
+
+    if (!response.ok) {
+      const grc = new AboutClient(this.url, this.auth);
+      if (await grc.exists()) {
+        // GeoServer exists, but requested item does not exist, we return empty
+        return;
+      } else {
+        // There was a general problem with GeoServer
+        const geoServerResponse = await getGeoServerResponseText(response);
+        throw new GeoServerResponseError(null, geoServerResponse);
+      }
+    }
+    return response.json();
+  }
 }
