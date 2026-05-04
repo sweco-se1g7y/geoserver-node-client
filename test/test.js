@@ -2,7 +2,7 @@
 import { expect } from 'chai';
 import { GeoServerRestClient } from '../geoserver-rest-client.js';
 
-const port = process.env.GEOSERVER_PORT;
+const port = process.env.GEOSERVER_PORT || 8080;
 const url = `http://localhost:${port}/geoserver/rest/`;
 const user = 'admin';
 const pw = 'geoserver';
@@ -633,6 +633,7 @@ describe('Style', () => {
 describe('Security', () => {
   const dummyUser = 'dummyUser';
   const dummyPassword = 'dummyPassword';
+  const dummyRole = 'dummyRole';
 
   before('create workspace', async () => {
     await grc.workspaces.create(workSpace);
@@ -672,6 +673,44 @@ describe('Security', () => {
 
     const allUsers = await grc.security.getAllUsers();
     expect(allUsers.users.length).to.equal(1); // admin always exists
+  });
+
+  it('can return all roles', async () => {
+    const allRoles = await grc.security.getAllRoles();
+    expect(allRoles.roles.length).to.equal(2); // ADMIN and GROUP_ADMIN always exist
+    expect(allRoles.roles.includes('ADMIN')).to.equal(true);
+    expect(allRoles.roles.includes('GROUP_ADMIN')).to.equal(true);
+  });
+
+  it('can create a role', async () => {
+    await grc.security.createRole(dummyRole);
+
+    const allRoles = await grc.security.getAllRoles();
+    expect(allRoles.roles.length).to.equal(3); // ADMIN and GROUP_ADMIN always exist
+    expect(allRoles.roles[2]).to.equal(dummyRole);
+  });
+
+  it('can delete a role', async () => {
+    await grc.security.deleteRole(dummyRole);
+
+    const allRoles = await grc.security.getAllRoles();
+    expect(allRoles.roles.length).to.equal(2); // ADMIN and GROUP_ADMIN always exist
+  });
+
+  it('can add data access rule (ACL)', async () => {
+    const rule = `${workSpace}.*.r`;
+    await grc.security.createDataAccessRule(rule, ['ADMIN']);
+
+    const accessRules = await grc.security.getAllAccessRules();
+    expect(Object.entries(accessRules).length).to.equal(3); // always 2 default roles existing
+  });
+
+  it('can delete data access rule (ACL)', async () => {
+    const rule = `${workSpace}.*.r`;
+    await grc.security.deleteDataAccessRule(rule);
+
+    const accessRules = await grc.security.getAllAccessRules();
+    expect(Object.entries(accessRules).length).to.equal(2); // always 2 default roles existing
   });
 
   after(async () => {

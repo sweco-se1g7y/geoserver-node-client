@@ -18,8 +18,9 @@ Detailed [API-Docs](https://meggsimum.github.io/geoserver-node-client/) are auto
 
 Compatible with [GeoServer](https://geoserver.org)
 
+- v2.28.x
 - v2.27.x
-- v2.26.x
+- v2.26.x (no more maintained and officially deprecated)
 - v2.25.x (no more maintained and officially deprecated)
 - v2.24.x (no more maintained and officially deprecated)
 - v2.23.x (no more maintained and officially deprecated)
@@ -116,14 +117,14 @@ A request either succeeds or throws the custom `GeoServerResponseError`. It has 
 First start a test setup using this Docker compose file:
 
 ```shell
-docker-compose -f test/docker-compose.yml up
+GEOSERVER_VERSION=2.28.0 TEMP_DIR=/tmp/gs docker compose -f test/docker-compose.yml up
 ```
 
 Then, in an other terminal, run:
 
 ```shell
 # specify the GeoServer version and run the test suite
-GEOSERVER_VERSION=2.20.4 npm run test
+GEOSERVER_VERSION=2.28.0 npm run test
 ```
 
 ## Release
@@ -147,7 +148,7 @@ npm login
 # then enter your credentials
 ```
 
-3. Locally checkout the latest `master` branch that you would like to release, then run:
+3. Locally checkout the latest `main` branch that you would like to release, then run:
 
 ```shell
 npm run release
